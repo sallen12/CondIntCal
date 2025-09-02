@@ -24,18 +24,18 @@ Calculate the interval score for forecasts in the form of prediction intervals.
 \details{
 \emph{Theory:}
 
-Interval forecasts (or prediction intervals) are comprised of a lower bound \eqn{l}
-and an upper bound \eqn{u}, with \eqn{l < u}. The forecast is made such that the
+Interval forecasts (or prediction intervals) are comprised of a lower bound \eqn{\ell}
+and an upper bound \eqn{u}, with \eqn{\ell < u}. The forecast is made such that the
 observation \eqn{y} is predicted to fall within the interval with a given coverage level \eqn{1 - \alpha}.
 In the general case, it can be assumed that the prediction interval is \emph{non-central},
-so that the probability that \eqn{y < l} is equal to \eqn{\alpha_1 \in (0, 1)} and the probability
+so that the probability that \eqn{y < \ell} is equal to \eqn{\alpha_1 \in (0, 1)} and the probability
 that \eqn{y > u} is equal to \eqn{\alpha_2 \in (0, 1)}, with \eqn{\alpha_1 < \alpha_2}.
 Typically, a \emph{central} prediction interval is issued, for which it is assumed that the
-probability that \eqn{y < l} is equal to the probability that \eqn{y > u}, i.e.
+probability that \eqn{y < \ell} is equal to the probability that \eqn{y > u}, i.e.
 \eqn{\alpha_1 = \alpha/2} and \eqn{\alpha_2 = 1 - \alpha/2}.
 
 Competing interval forecasts can be compared using the interval score,
-\deqn{\mathrm{IS}_{\alpha_1, \alpha_2}([l, u], y) = |u - y | + \frac{1}{\alpha_1} 1\{y < l\} (l - y) + \frac{1}{1 - \alpha_2} 1\{y > u\} (y - u)}.
+\deqn{\mathrm{IS}_{\alpha_1, \alpha_2}([\ell, u], y) = |u - y | + \frac{1}{\alpha_1} 1\{y < \ell\} (\ell - y) + \frac{1}{1 - \alpha_2} 1\{y > u\} (y - u)}.
 In the case of central prediction intervals, the scaling factors \eqn{1 / \alpha_1} and \eqn{1 / (1 - \alpha_2)} both
 simplify to \eqn{2 / \alpha}.
 
@@ -119,7 +119,7 @@ mean(out_un)
 
 }
 \seealso{
-\code{\link{is_decomp}} \code{\link{coverage}} \code{\link{count_comparables}} \code{\link{plot_mcbdsc}}
+\code{\link{is_decomp}} \code{\link{coverage}}
 }
 \author{
 Sam Allen

@@ -27,25 +27,25 @@
 #'
 #' \emph{Theory:}
 #'
-#' Interval forecasts (or prediction intervals) are comprised of a lower bound \eqn{l}
-#' and an upper bound \eqn{u}, with \eqn{l < u}. The forecast is made such that the
+#' Interval forecasts (or prediction intervals) are comprised of a lower bound \eqn{\ell}
+#' and an upper bound \eqn{u}, with \eqn{\ell < u}. The forecast is made such that the
 #' observation \eqn{y} is predicted to fall within the interval with a given coverage level \eqn{1 - \alpha}.
 #' In the general case, it can be assumed that the prediction interval is \emph{non-central},
-#' so that the probability that \eqn{y < l} is equal to \eqn{\alpha_1 \in (0, 1)} and the probability
+#' so that the probability that \eqn{y < \ell} is equal to \eqn{\alpha_1 \in (0, 1)} and the probability
 #' that \eqn{y > u} is equal to \eqn{\alpha_2 \in (0, 1)}, with \eqn{\alpha_1 < \alpha_2}.
 #' Typically, a \emph{central} prediction interval is issued, for which it is assumed that the
-#' probability that \eqn{y < l} is equal to the probability that \eqn{y > u}, i.e.
+#' probability that \eqn{y < \ell} is equal to the probability that \eqn{y > u}, i.e.
 #' \eqn{\alpha_1 = \alpha/2} and \eqn{\alpha_2 = 1 - \alpha/2}.
 #'
 #' Competing interval forecasts can be compared using the interval score,
-#' \deqn{\mathrm{IS}_{\alpha_1, \alpha_2}([l, u], y) = |u - y | + \frac{1}{\alpha_1} 1\{y < l\} (l - y) + \frac{1}{1 - \alpha_2} 1\{y > u\} (y - u)}.
+#' \deqn{\mathrm{IS}_{\alpha_1, \alpha_2}([\ell, u], y) = |u - y | + \frac{1}{\alpha_1} 1\{y < \ell\} (\ell - y) + \frac{1}{1 - \alpha_2} 1\{y > u\} (y - u)}.
 #' In the case of central prediction intervals, the scaling factors \eqn{1 / \alpha_1} and \eqn{1 / (1 - \alpha_2)} both
 #' simplify to \eqn{2 / \alpha}.
 #'
 #' In practice, we observe several interval forecasts \eqn{[\ell_i, u_i]} and corresponding observations \eqn{y_i}
 #' for \eqn{i = 1, \dots, n}, and we wish to compare forecasters or forecast methods based on
 #' the average interval score
-#' \deqn{\mathrm{\bar{S}} = \frac{1}{n} \sum_{i=1}^{n} \mathrm{IS}_{\alpha_1, \alpha_2}([l_i, u_i], y_i).}
+#' \deqn{\mathrm{\bar{S}} = \frac{1}{n} \sum_{i=1}^{n} \mathrm{IS}_{\alpha_1, \alpha_2}([\ell_i, u_i], y_i).}
 #'
 #' While the average score \eqn{\mathrm{\bar{S}}} provides a single value that can be used to rank
 #' different forecasters, it can also be additively decomposed into terms quantifying different
@@ -59,7 +59,7 @@
 #' and
 #' \deqn{\mathrm{\bar{S}^C} = \frac{1}{n} \sum_{i=1}^{n} \mathrm{IS}_{\alpha_1, \alpha_2}(C_i, y_i)}
 #' is the average interval score for \eqn{C_i}, which correspond to recalibrated versions of
-#' the original prediction intervals \eqn{[l_i, u_i]}.
+#' the original prediction intervals \eqn{[\ell_i, u_i]}.
 #'
 #' The first term of the decomposition, \eqn{\mathrm{\bar{S}^R}}, provides a baseline measure of forecast performance,
 #' thereby quantifying the inherent uncertainty or unpredictability of the observations; the second term,
