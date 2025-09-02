@@ -1,0 +1,135 @@
+#' Interval Score
+#'
+#' @description
+#' Calculate the interval score for forecasts in the form of prediction intervals.
+#'
+#' @inheritParams is_decomp
+#'
+#'
+#' @return
+#' Numeric vector of interval scores.
+#'
+#'
+#' @details
+#'
+#' \emph{Theory:}
+#'
+#' Interval forecasts (or prediction intervals) are comprised of a lower bound \eqn{l}
+#' and an upper bound \eqn{u}, with \eqn{l < u}. The forecast is made such that the
+#' observation \eqn{y} is predicted to fall within the interval with a given coverage level \eqn{1 - \alpha}.
+#' In the general case, it can be assumed that the prediction interval is \emph{non-central},
+#' so that the probability that \eqn{y < l} is equal to \eqn{\alpha_1 \in (0, 1)} and the probability
+#' that \eqn{y > u} is equal to \eqn{\alpha_2 \in (0, 1)}, with \eqn{\alpha_1 < \alpha_2}.
+#' Typically, a \emph{central} prediction interval is issued, for which it is assumed that the
+#' probability that \eqn{y < l} is equal to the probability that \eqn{y > u}, i.e.
+#' \eqn{\alpha_1 = \alpha/2} and \eqn{\alpha_2 = 1 - \alpha/2}.
+#'
+#' Competing interval forecasts can be compared using the interval score,
+#' \deqn{\mathrm{IS}_{\alpha_1, \alpha_2}([l, u], y) = |u - y | + \frac{1}{\alpha_1} 1\{y < l\} (l - y) + \frac{1}{1 - \alpha_2} 1\{y > u\} (y - u)}.
+#' In the case of central prediction intervals, the scaling factors \eqn{1 / \alpha_1} and \eqn{1 / (1 - \alpha_2)} both
+#' simplify to \eqn{2 / \alpha}.
+#'
+#'
+#' \emph{Implementation:}
+#'
+#' \code{y} should be a numeric vector of observations.
+#'
+#' \code{int} should be a numeric matrix or dataframe containing the prediction intervals for \code{y}.
+#' We should have that \code{nrow(int) = length(y)} and \code{ncol(int) = 2}. The first and
+#' second columns of \code{int} should contain the lower and upper bounds of the prediction
+#' intervals, respectively, so that \code{all(int[, 1] < int[, 2])}.
+#'
+#' \code{level} should be the nominal coverage of the prediction intervals. For example, if \code{int}
+#' contains central 90% prediction intervals for \code{y}, then \code{level = 0.9}.
+#' This corresponds to \eqn{1 - \alpha} in the theoretical explanation above.
+#' If the prediction intervals are non-central prediction intervals for \code{y}, then
+#' \code{alpha1} and \code{alpha2} should be used instead of \code{level}; if both are used,
+#' then \code{level} will be ignored.
+#'
+#' \code{alpha1} and \code{alpha2} should be the lower and upper quantile levels corresponding
+#' to the lower and upper bounds of \code{int}, if \code{int} contains non-central prediction
+#' intervals for \code{y}. These correspond to \eqn{\alpha_1} and \eqn{\alpha_2} in the theoretical
+#' explanation above. If the prediction intervals are central prediction intervals for \code{y}, then
+#' it is simpler to use \code{level} instead of \code{alpha1} and \code{alpha2}.
+#'
+#'
+#' @seealso \code{\link{is_decomp}} \code{\link{coverage}} \code{\link{count_comparables}} \code{\link{plot_mcbdsc}}
+#'
+#'
+#' @section References:
+#'
+#' Gneiting, T., & Raftery, A. E. (2007):
+#' `Strictly proper scoring rules, prediction, and estimation'
+#' \emph{Journal of the American statistical Association}, 102, 359-378.
+#'
+#'
+#' @author Sam Allen
+#'
+#'
+#' @examples
+#'
+#' n <- 1000 # sample size
+#' mu <- rnorm(n)
+#' y <- rnorm(n, mean = mu, sd = 1) # simulate observations
+#'
+#' ## central prediction intervals
+#'
+#' alpha <- 0.1 # 90% prediction intervals
+#'
+#' # Ideal forecaster: F = N(mu, 1)
+#' L_id <- qnorm(alpha/2, mu)
+#' U_id <- qnorm(1 - alpha/2, mu)
+#' int_id <- data.frame(Lower = L_id, Upper = U_id)
+#'
+#' # Unconditional forecaster: F = N(0, 2)
+#' L_un <- qnorm(alpha/2, 0, sqrt(2))
+#' U_un <- qnorm(1 - alpha/2, 0, sqrt(2))
+#' int_un <- data.frame(Lower = L_un, Upper = U_un)
+#'
+#' out_id <- interval_score(y, int_id, level = 1 - alpha)
+#' out_un <- interval_score(y, int_un, level = 1 - alpha)
+#' mean(out_id)
+#' mean(out_un)
+#'
+#'
+#' ## non-central prediction intervals
+#'
+#' alpha1 <- 0.05
+#' alpha2 <- 0.9
+#'
+#' # Ideal forecaster: F = N(mu, 1)
+#' L_id <- qnorm(alpha1, mu)
+#' U_id <- qnorm(alpha2, mu)
+#' int_id <- data.frame(Lower = L_id, Upper = U_id)
+#'
+#' # Unconditional forecaster: F = N(0, 2)
+#' L_id <- qnorm(alpha1, mu)
+#' U_id <- qnorm(alpha2, mu)
+#' int_un <- data.frame(Lower = L_un, Upper = U_un)
+#'
+#' out_id <- interval_score(y, int_id, alpha1 = alpha1, alpha2 = alpha2)
+#' out_un <- interval_score(y, int_un, alpha1 = alpha1, alpha2 = alpha2)
+#' mean(out_id)
+#' mean(out_un)
+#'
+#'
+#' @name interval_score
+NULL
+
+# interval score
+#' @export
+#' @rdname interval_score
+interval_score <- function(y, int, level = NULL, alpha1 = NULL, alpha2 = NULL){
+  check_args(y, int, level, alpha1, alpha2, method = "linear", return_fit = TRUE)
+  if (is.null(alpha1) && is.null(alpha2)) alpha1 <- (1 - level)/2; alpha2 <- 1 - alpha1
+  if (is.vector(int)) {
+    qs1 <- quantile_score(y, int[1], alpha1)
+    qs2 <- quantile_score(y, int[2], alpha2)
+  } else {
+    qs1 <- quantile_score(y, int[, 1], alpha1)
+    qs2 <- quantile_score(y, int[, 2], alpha2)
+  }
+  is <- qs1/alpha1 + qs2/(1 - alpha2)
+}
+
+quantile_score <- function(y, x, alpha) ((y < x) - alpha)*(x - y)

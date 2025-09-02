@@ -1,4 +1,3 @@
-#' Probabilistic tail calibration
 #' Interval Score Decompositions
 #'
 #' @description
@@ -161,8 +160,15 @@
 #' all.equal(out_lin, out_lin3)
 #'
 #' # non-central prediction intervals
+#'
 #' alpha1 <- 0.05
 #' alpha2 <- 0.9
+#'
+#' # Ideal forecaster: F = N(mu, 1)
+#' L_id <- qnorm(alpha1, mu)
+#' U_id <- qnorm(alpha2, mu)
+#' int_id <- data.frame(Lower = L_id, Upper = U_id)
+#'
 #' out_iso <- is_decomp(y, int_id, alpha1 = alpha1, alpha2 = alpha2) # isotonic
 #' out_lin <- is_decomp(y, int_id, alpha1 = alpha1, alpha2 = alpha2, method = "linear") # linear
 #'
