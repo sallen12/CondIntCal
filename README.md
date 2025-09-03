@@ -7,6 +7,7 @@ This repository provides `R` functions to assess the conditional calibration of 
 - Two theoretically-appealing methods to calculate the decomposition terms
 - Additional functions to assess the average interval length and unconditional (i.e. marginal) coverage 
 - Miscalibration-Discrimination plots to visualise the decomposition terms
+- Functionality to handle both central and non-central prediction intervals
 
 ---
 
