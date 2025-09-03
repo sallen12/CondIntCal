@@ -134,7 +134,6 @@
 #'
 #'
 #' @examples
-#'
 #' n <- 1000 # sample size
 #' alpha <- 0.1 # 90% prediction intervals
 #' mu <- rnorm(n)

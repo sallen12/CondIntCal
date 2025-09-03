@@ -67,7 +67,6 @@
 #'
 #'
 #' @examples
-#'
 #' n <- 1000 # sample size
 #' mu <- rnorm(n)
 #' y <- rnorm(n, mean = mu, sd = 1) # simulate observations

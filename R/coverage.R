@@ -11,7 +11,7 @@
 #'
 #'
 #' @return
-#' Numeric vector of interval scores.
+#' The marginal coverage of the prediction intervals.
 #'
 #'
 #' @details
@@ -80,7 +80,6 @@
 #'
 #'
 #' @examples
-#'
 #' n <- 10000 # sample size
 #' mu <- rnorm(n)
 #' y <- rnorm(n, mean = mu, sd = 1) # simulate observations
@@ -88,7 +87,7 @@
 #' alpha <- 0.1 # 90% prediction intervals
 #'
 #' # Ideal forecaster: F = N(mu, 1)
-#' L <- qnorm(alpha/2, mu)
+#' L_id <- qnorm(alpha/2, mu)
 #' U_id <- qnorm(1 - alpha/2, mu)
 #' int_id <- data.frame(Lower = L_id, Upper = U_id)
 #'

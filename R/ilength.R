@@ -1,0 +1,82 @@
+#' Interval forecast length
+#'
+#' @description
+#' Calculate the average length of prediction intervals.
+#'
+#' @inheritParams is_decomp
+#'
+#'
+#' @return
+#' The average length of the prediction intervals.
+#'
+#'
+#' @details
+#'
+#' \emph{Theory:}
+#'
+#' Interval forecasts (or prediction intervals) are comprised of a lower bound \eqn{\ell}
+#' and an upper bound \eqn{u}, with \eqn{\ell < u}. The forecast is made such that the
+#' observation \eqn{y} is predicted to fall within the interval with a given coverage level.
+#'
+#' In practice, we observe several interval forecasts \eqn{[\ell_i, u_i]} and corresponding observations \eqn{y_i}
+#' for \eqn{i = 1, \dots, n}. It is common to compare forecasters or forecast systems by looking at
+#' the average length of the prediction intervals; the forecaster with the shortest average length,
+#' subject to achieving the correct marginal coverage, is typically preferred.
+#'
+#' The average length is calculated using
+#' \deqn{\frac{1}{n} \sum_{i=1}^{n} (u_i - \ell_i).}
+#'
+#'
+#' \emph{Implementation:}
+#'
+#' \code{int} should be a numeric matrix or dataframe containing the prediction intervals for \code{y}.
+#' We should have that \code{nrow(int) = length(y)} and \code{ncol(int) = 2}. The first and
+#' second columns of \code{int} should contain the lower and upper bounds of the prediction
+#' intervals, respectively, so that \code{all(int[, 1] < int[, 2])}.
+#'
+#'
+#' @seealso \code{\link{is_decomp}} \code{\link{coverage}}
+#'
+#'
+#' @author Sam Allen
+#'
+#'
+#' @examples
+#' n <- 10000 # sample size
+#' mu <- rnorm(n)
+#' y <- rnorm(n, mean = mu, sd = 1) # simulate observations
+#'
+#' alpha <- 0.1 # 90% prediction intervals
+#'
+#' # Ideal forecaster: F = N(mu, 1)
+#' L_id <- qnorm(alpha/2, mu)
+#' U_id <- qnorm(1 - alpha/2, mu)
+#' int_id <- data.frame(Lower = L_id, Upper = U_id)
+#'
+#' # Unconditional forecaster: F = N(0, 2)
+#' L_un <- qnorm(alpha/2, 0, sqrt(2))
+#' U_un <- qnorm(1 - alpha/2, 0, sqrt(2))
+#' int_un <- data.frame(Lower = L_un, Upper = U_un)
+#'
+#' coverage(y, int_id)
+#' coverage(y, int_un)
+#'
+#' ilength(int_id)
+#' ilength(int_un)
+#'
+#' # both forecasts have the same marginal coverage but the ideal intervals are shorter on average
+#'
+#'
+#' @name ilength
+NULL
+
+# average interval forecast length
+#' @export
+#' @rdname ilength
+ilength <- function(int) {
+  if (is.vector(int)) {
+    int[2] - int[1]
+  } else {
+    mean(int[, 2] - int[, 1])
+  }
+}
