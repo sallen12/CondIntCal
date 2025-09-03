@@ -272,15 +272,15 @@ plot_mcbdsc <- function(decomp, n_isolines = 10, colour_values = "black", colour
 check_plot_args <- function(decomp, n_isolines, colour_values, colour_unc, MCBDSC_repel, MCB_lim, DSC_lim) {
   # decomp
   if (!is.list(decomp) && !is.data.frame(decomp)) stop("'int' must either be a list or dataframe")
-  if (is.list(decomp)) {
+  if (is.data.frame(decomp)) {
+    n <- nrow(decomp)
+    if (!all(c("UNC", "DSC", "MCB", "forecast") %in% colnames(decomp)))
+      stop("'decomp' must contain columns labelled 'UNC', 'DSC', 'MCB', and 'forecast'")
+  } else {
     n <- length(decomp)
     if (is.null(names(decomp))) warning("no labels are given for the forecast methods")
     if (!all(sapply(decomp, function(x) all(c("UNC", "DSC", "MCB") %in% names(x)))))
       stop("the elements of 'decomp' must be named vectors with labels 'UNC', 'DSC', and 'MCB'")
-  } else {
-    n <- nrow(decomp)
-    if (!all(c("UNC", "DSC", "MCB", "forecast") %in% colnames(decomp)))
-      stop("'decomp' must contain columns labelled 'UNC', 'DSC', 'MCB', and 'forecast'")
   }
 
   # n_isolines
