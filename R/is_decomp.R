@@ -38,7 +38,7 @@
 #' \eqn{\alpha_1 = \alpha/2} and \eqn{\alpha_2 = 1 - \alpha/2}.
 #'
 #' Competing interval forecasts can be compared using the interval score,
-#' \deqn{\mathrm{IS}_{\alpha_1, \alpha_2}([\ell, u], y) = |u - y | + \frac{1}{\alpha_1} 1\{y < \ell\} (\ell - y) + \frac{1}{1 - \alpha_2} 1\{y > u\} (y - u)}.
+#' \deqn{\mathrm{IS}_{\alpha_1, \alpha_2}([\ell, u], y) = |u - \ell| + \frac{1}{\alpha_1} 1\{y < \ell\} (\ell - y) + \frac{1}{1 - \alpha_2} 1\{y > u\} (y - u)}.
 #' In the case of central prediction intervals, the scaling factors \eqn{1 / \alpha_1} and \eqn{1 / (1 - \alpha_2)} both
 #' simplify to \eqn{2 / \alpha}.
 #'

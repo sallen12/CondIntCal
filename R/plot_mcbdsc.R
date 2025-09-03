@@ -298,20 +298,24 @@ check_plot_args <- function(decomp, n_isolines, colour_values, colour_unc, MCBDS
   if (!is.logical(MCBDSC_repel) || length(MCBDSC_repel) > 1) stop("'MCBDSC_repel' must be a single logical")
 
   # MCB_lim
-  if (!is.numeric(MCB_lim) || length(MCB_lim) > 2) stop("'MCB_lim' must be a numeric vector of length 1 or 2")
-  if (length(MCB_lim) == 2) {
-    if (MCB_lim[2] <= MCB_lim[1]) stop("The second value in 'MCB_lim' must be larger than the first.")
-    if (MCB_lim[2] <= 0) stop(paste("The upper bound of the x-axis must be positive. Currently", MCB_lim[2]))
-  } else {
-    if (MCB_lim <= 0) stop(paste("The upper bound of the x-axis must be positive. Currently", MCB_lim))
+  if (!is.na(MCB_lim)) {
+    if (!is.numeric(MCB_lim) || length(MCB_lim) > 2) stop("'MCB_lim' must be a numeric vector of length 1 or 2")
+    if (length(MCB_lim) == 2) {
+      if (MCB_lim[2] <= MCB_lim[1]) stop("The second value in 'MCB_lim' must be larger than the first.")
+      if (MCB_lim[2] <= 0) stop(paste("The upper bound of the x-axis must be positive. Currently", MCB_lim[2]))
+    } else {
+      if (MCB_lim <= 0) stop(paste("The upper bound of the x-axis must be positive. Currently", MCB_lim))
+    }
   }
 
   # DSC_lim
-  if (!is.numeric(DSC_lim) || length(DSC_lim) > 2) stop("'DSC_lim' must be a numeric vector of length 1 or 2")
-  if (length(DSC_lim) == 2) {
-    if (DSC_lim[2] <= DSC_lim[1]) stop("The second value in 'DSC_lim' must be larger than the first.")
-    if (DSC_lim[2] <= 0) stop(paste("The upper bound of the y-axis must be positive. Currently", DSC_lim[2]))
-  } else {
-    if (DSC_lim <= 0) stop(paste("The upper bound of the y-axis must be positive. Currently", DSC_lim))
+  if (!is.na(DSC_lim)) {
+    if (!is.numeric(DSC_lim) || length(DSC_lim) > 2) stop("'DSC_lim' must be a numeric vector of length 1 or 2")
+    if (length(DSC_lim) == 2) {
+      if (DSC_lim[2] <= DSC_lim[1]) stop("The second value in 'DSC_lim' must be larger than the first.")
+      if (DSC_lim[2] <= 0) stop(paste("The upper bound of the y-axis must be positive. Currently", DSC_lim[2]))
+    } else {
+      if (DSC_lim <= 0) stop(paste("The upper bound of the y-axis must be positive. Currently", DSC_lim))
+    }
   }
 }
