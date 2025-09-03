@@ -2,7 +2,7 @@
 % Please edit documentation in R/coverage.R
 \name{coverage}
 \alias{coverage}
-\title{Interval forecast coverage}
+\title{Interval Forecast Coverage}
 \usage{
 coverage(y, int, closed = TRUE, twosided = FALSE)
 }

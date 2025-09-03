@@ -119,7 +119,7 @@ NULL
 #' @export
 #' @rdname interval_score
 interval_score <- function(y, int, level = NULL, alpha1 = NULL, alpha2 = NULL){
-  check_args(y, int, level, alpha1, alpha2, method = "linear", return_fit = TRUE)
+  check_is_args(y, int, level, alpha1, alpha2)
   if (is.null(alpha1) && is.null(alpha2)) alpha1 <- (1 - level)/2; alpha2 <- 1 - alpha1
   if (is.vector(int)) {
     qs1 <- quantile_score(y, int[1], alpha1)
@@ -132,3 +132,46 @@ interval_score <- function(y, int, level = NULL, alpha1 = NULL, alpha2 = NULL){
 }
 
 quantile_score <- function(y, x, alpha) ((y < x) - alpha)*(x - y)
+
+# argument checks
+check_is_args <- function(y, int, level, alpha1, alpha2) {
+  # y
+  if (!is.numeric(y) || !is.vector(y)) stop("'y' must be a numeric vector")
+  n <- length(y)
+  if (!(n > 1)) stop("'y' must contain multiple observations")
+
+  # int
+  if (!is.matrix(int) && !is.data.frame(int) && !is.vector(int)) stop("'int' must either be a vector, matrix or dataframe")
+  if ((is.matrix(int) || is.vector(int)) && !is.numeric(int)) stop("'int' must contain numeric values")
+  if (is.data.frame(int) && !all(sapply(int, is.numeric))) stop("'int' must contain numeric values")
+  if (is.matrix(int) || is.data.frame(int)) {
+    if (ncol(int) != 2) stop("'int' must be a matrix or dataframe of dimension (n, 2)")
+    if (nrow(int) != n) stop("the number of rows in 'int' must be the same as the length of 'y'")
+    if (any(int[, 2] < int[, 1])) stop("the second column of 'int' must always be no smaller than the first column")
+  } else {
+    if (length(int) != 2) stop("'int' must either be a vector of length 2, or a matrix or dataframe of dimension (n, 2)")
+    if (int[2] < int[1]) stop("the second value of 'int' must be no smaller than the first")
+  }
+
+  # level, alpha1, alpha2
+  if (is.null(alpha1) && is.null(alpha2)) {
+    # level
+    if (is.null(level)) stop("at least one of 'level', 'alpha1', and 'alpha2' must be provided")
+    if (!is.numeric(level) || length(level) > 1) stop("'level' must be a single numeric")
+    if (level <= 0 || level >= 1) stop("'level' must be between 0 and 1")
+  } else {
+    if (!is.null(level)) warning("'level' and 'alpha1' and/or 'alpha2' are provided - 'level' will be ignored")
+    # alpha 1
+    if (!is.null(alpha1)) {
+      if (!is.numeric(alpha1) || length(alpha1) > 1) stop("'alpha1' must be a single numeric")
+      if (alpha1 <= 0 || alpha1 >= 1) stop("'alpha1' must be between 0 and 1")
+    }
+    # alpha 2
+    if (!is.null(alpha2)) {
+      if (!is.numeric(alpha2) || length(alpha2) > 1) stop("'alpha2' must be a single numeric")
+      if (alpha2 <= 0 || alpha2 >= 1) stop("'alpha2' must be between 0 and 1")
+    }
+    if (alpha2 <= alpha1) stop("'alpha1' must be smaller than 'alpha2'")
+  }
+
+}

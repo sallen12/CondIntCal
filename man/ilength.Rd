@@ -2,7 +2,7 @@
 % Please edit documentation in R/ilength.R
 \name{ilength}
 \alias{ilength}
-\title{Interval forecast length}
+\title{Interval Forecast Length}
 \usage{
 ilength(int)
 }

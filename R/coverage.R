@@ -1,4 +1,4 @@
-#' Interval forecast coverage
+#' Interval Forecast Coverage
 #'
 #' @description
 #' Calculate the (marginal) coverage of forecasts in the form of prediction intervals.

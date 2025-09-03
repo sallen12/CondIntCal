@@ -180,7 +180,6 @@ NULL
 #' @rdname is_decomp
 is_decomp <- function(y, int, level = NULL, alpha1 = NULL, alpha2 = NULL, method = c("isotonic", "linear"), return_fit = F) {
   method <- match.arg(method)
-  check_args(y, int, level, alpha1, alpha2, method, return_fit)
 
   if (method == "isotonic") {
     is_decomp_iso(y, int, level, alpha1, alpha2, return_fit)

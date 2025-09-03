@@ -1,4 +1,4 @@
-#' Count comparable prediction intervals
+#' Count Comparable Prediction Intervals
 #'
 #' @description
 #' Calculate the proportion of prediction intervals that are comparable (i.e. ordered).

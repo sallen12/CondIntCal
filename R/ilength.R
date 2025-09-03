@@ -1,4 +1,4 @@
-#' Interval forecast length
+#' Interval Forecast Length
 #'
 #' @description
 #' Calculate the average length of prediction intervals.

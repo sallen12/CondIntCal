@@ -2,7 +2,7 @@
 % Please edit documentation in R/count_comparables.R
 \name{count_comparables}
 \alias{count_comparables}
-\title{Count comparable prediction intervals}
+\title{Count Comparable Prediction Intervals}
 \usage{
 count_comparables(int)
 }
