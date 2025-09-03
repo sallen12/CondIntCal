@@ -1,0 +1,95 @@
+#' Count comparable prediction intervals
+#'
+#' @description
+#' Calculate the proportion of prediction intervals that are comparable (i.e. ordered).
+#'
+#' @inheritParams is_decomp
+#'
+#'
+#' @return
+#' The proportion of prediction intervals that are comparable (i.e. ordered).
+#'
+#'
+#' @details
+#'
+#' \emph{Theory:}
+#'
+#' Interval forecasts (or prediction intervals) are comprised of a lower bound \eqn{\ell}
+#' and an upper bound \eqn{u}, with \eqn{\ell < u}. The forecast is made such that the
+#' observation \eqn{y} is predicted to fall within the interval with a given coverage level.
+#'
+#' In practice, we observe several interval forecasts \eqn{[\ell_i, u_i]} and corresponding observations \eqn{y_i}
+#' for \eqn{i = 1, \dots, n}. The conditional calibration of the interval forecasts can be
+#' assessed using decompositions of the interval score (see \code{\link{is_decomp}} for details).
+#' One such decomposition employs isotonic distributional regression (IDR), which
+#' assumes that there is an isotonic relationship between the prediction intervals and
+#' the observations. That is, a larger prediction interval generally corresponds to
+#' a larger observation.
+#'
+#' A prediction interval \eqn{[\ell_j, u_j]} is said to be larger than another prediction
+#' interval \eqn{[\ell_i, u_i]} if \eqn{\ell_i \le \ell_j} and \eqn{u_i \le u_j}. Two prediction
+#' intervals are said to be \emph{comparable} if one is larger than the other. If the prediction
+#' intervals are not comparable, then they must be \emph{nested}, since
+#' \eqn{\ell_i \le \ell_j} and \eqn{u_j \le u_i} or vice versa.
+#'
+#' For IDR to give a meaningful decomposition of the interval score, a large proportion of the
+#' prediction intervals should be comparable. This proportion can be calculated using
+#' \deqn{\frac{1}{n(n - 1)} \sum_{i=1}^{n}\sum_{j=1; j \neq i}^{n} (1\{\ell_i \le \ell_j\}1\{u_i \le u_j\} + 1\{\ell_j \le \ell_i\}1\{u_j \le u_i\} - 1\{\ell_i = \ell_j\}1\{u_i = u_j\}).}
+#'
+#'
+#' \emph{Implementation:}
+#'
+#' \code{int} should be a numeric matrix or dataframe containing the prediction intervals for \code{y}.
+#' We should have that \code{nrow(int) = length(y)} and \code{ncol(int) = 2}. The first and
+#' second columns of \code{int} should contain the lower and upper bounds of the prediction
+#' intervals, respectively, so that \code{all(int[, 1] < int[, 2])}.
+#'
+#'
+#' @seealso \code{\link{is_decomp}}
+#'
+#'
+#' @author Sam Allen
+#'
+#'
+#' @examples
+#' n <- 10000 # sample size
+#' mu <- rnorm(n)
+#' y <- rnorm(n, mean = mu, sd = 1) # simulate observations
+#'
+#' alpha <- 0.1 # 90% prediction intervals
+#'
+#' # Ideal forecaster: F = N(mu, 1)
+#' L_id <- qnorm(alpha/2, mu)
+#' U_id <- qnorm(1 - alpha/2, mu)
+#' int_id <- data.frame(Lower = L_id, Upper = U_id)
+#'
+#' # Nested forecaster: F = N(0, |mu|)
+#' L_ne <- qnorm(alpha/2, 0, sqrt(abs(mu)))
+#' U_ne <- qnorm(1 - alpha/2, 0, sqrt(abs(mu)))
+#' int_ne <- data.frame(Lower = L_ne, Upper = U_ne)
+#'
+#' count_comparables(int_id) # ideal intervals are ordered and therefore all comparable
+#' count_comparables(int_ne) # nested intervals are all nested and therefore none are comparable
+#'
+#'
+#' @name count_comparables
+NULL
+
+# calculate the proportion of distinct intervals that are comparable
+#' @export
+#' @rdname count_comparables
+count_comparables <- function(int) {
+
+  if (!is.data.frame(int)) int <- data.frame(Lower = int[, 1], Upper = int[, 2])
+
+  n <- nrow(int)
+
+  outL <- outer(int$Lower, int$Lower, "-") |> sign()
+  outU <- outer(int$Upper, int$Upper, "-") |> sign()
+  out <- outL + outU # negative or positive values are comparable, 0 values are not
+  out[outL == 0 & outU == 0] <- 1 # identical points are comparable
+
+  prop <- (sum(out != 0) - n) / (n*(n - 1)) # - n ignores the diagonal containing non-distinct pairs
+
+  return(prop)
+}
