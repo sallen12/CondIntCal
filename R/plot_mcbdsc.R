@@ -94,7 +94,7 @@ NULL
 #' @rdname plot_mcbdsc
 plot_mcbdsc <- function(decomp, n_isolines = 10, colour_values = "black", colour_unc = "#00BF7D", MCBDSC_repel = FALSE, MCB_lim = NA, DSC_lim = NA) {
   check_plot_args(decomp, n_isolines, colour_values, colour_unc, MCBDSC_repel, MCB_lim, DSC_lim)
-  if (is.list(decomp)) {
+  if (!is.data.frame(decomp)) {
     decomp <- decomp |> as.data.frame() |> t() |> as.data.frame()
     decomp$forecast <- rownames(decomp)
   }
