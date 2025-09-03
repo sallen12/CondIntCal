@@ -164,6 +164,7 @@ Allen, S., Burnello, J. and Ziegel, J. (2025):
 }
 
 \examples{
+\dontrun{
 n <- 1000 # sample size
 alpha <- 0.1 # 90\% prediction intervals
 mu <- rnorm(n)
@@ -176,14 +177,14 @@ int_id <- data.frame(Lower = L_id, Upper = U_id)
 
 # isotonic decomposition
 out_iso <- is_decomp(y, int_id, level = 1 - alpha) # using level
-out_iso2 <- is_decomp(y, int_id, alpha1 = alpha/2, alpha2 = 1 - alpha/2) # using alpha1 and alpha2
+out_iso2 <- is_decomp(y, int_id, alpha1 = alpha/2, alpha2 = 1 - alpha/2)
 out_iso3 <- is_decomp_iso(y, int_id, level = 1 - alpha) # using is_decomp_iso
 all.equal(out_iso, out_iso2)
 all.equal(out_iso, out_iso3)
 
 # linear decomposition
 out_lin <- is_decomp(y, int_id, level = 1 - alpha, method = "linear") # using level
-out_lin2 <- is_decomp(y, int_id, alpha1 = alpha/2, alpha2 = 1 - alpha/2, method = "linear") # using alpha1 and alpha2
+out_lin2 <- is_decomp(y, int_id, alpha1 = alpha/2, alpha2 = 1 - alpha/2, method = "linear")
 out_lin3 <- is_decomp_lin(y, int_id, level = 1 - alpha) # using is_decomp_lin
 all.equal(out_lin, out_lin2)
 all.equal(out_lin, out_lin3)
@@ -200,7 +201,7 @@ int_id <- data.frame(Lower = L_id, Upper = U_id)
 
 out_iso <- is_decomp(y, int_id, alpha1 = alpha1, alpha2 = alpha2) # isotonic
 out_lin <- is_decomp(y, int_id, alpha1 = alpha1, alpha2 = alpha2, method = "linear") # linear
-
+}
 
 }
 \seealso{

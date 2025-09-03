@@ -38,7 +38,7 @@
 #' Alternatively, \code{decomp} can be a list of named vectors with \code{UNC}, \code{DSC},
 #' and \code{MCB} components. In this case, the list is automatically converted into a dataframe
 #' of the above form, with the names of the list used as the labels for the different prediction
-#' models. This list format works easily with the ouput of \code{\link{is_decomp()}}, for example.
+#' models. This list format works easily with the ouput of \code{\link{is_decomp}}, for example.
 #'
 #' \code{n_isolines} is the number of isolines shown on the plot, showing the average score
 #' for different combinations of miscalibration and discrimination. This should be a single integer.
@@ -69,6 +69,7 @@
 #'
 #'
 #' @examples
+#' \dontrun{
 #' n <- 1000 # sample size
 #' alpha <- 0.1 # 90% prediction intervals
 #' mu <- rnorm(n)
@@ -83,7 +84,7 @@
 #' out_lin <- is_decomp(y, int_id, level = 1 - alpha, method = "linear") # linear decomposition
 #'
 #' plot_mcbdsc(list(Isotonic = out_iso, Linear = out_lin), MCB_lim = out_iso[1], DSC_lim = out_iso[1])
-#'
+#' }
 #'
 #' @name plot_mcbdsc
 NULL
