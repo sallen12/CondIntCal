@@ -102,6 +102,7 @@ NULL
 #' @export
 #' @rdname coverage
 coverage <- function(y, int, closed = TRUE, twosided = FALSE) {
+  check_cov_args(y, int, closed, twosided)
   n <- length(y)
   if (n == 1) {
     if (!is.vector(int)) {
@@ -126,4 +127,30 @@ coverage <- function(y, int, closed = TRUE, twosided = FALSE) {
   } else {
     1 - mean(ncov_low | ncov_upp)
   }
+}
+
+# argument checks
+check_cov_args <- function(y, int, closed, twosided) {
+  # y
+  if (!is.numeric(y) || !is.vector(y)) stop("'y' must be a numeric vector")
+  n <- length(y)
+
+  # int
+  if (!is.matrix(int) && !is.data.frame(int) && !is.vector(int)) stop("'int' must either be a vector, matrix or dataframe")
+  if ((is.matrix(int) || is.vector(int)) && !is.numeric(int)) stop("'int' must contain numeric values")
+  if (is.data.frame(int) && !all(sapply(int, is.numeric))) stop("'int' must contain numeric values")
+  if (is.matrix(int) || is.data.frame(int)) {
+    if (ncol(int) != 2) stop("'int' must be a matrix or dataframe of dimension (n, 2)")
+    if (!(nrow(int) %in% c(1, n))) stop("the number of rows in 'int' must be either 1 or the same as the length of 'y'")
+    if (any(int[, 2] < int[, 1])) stop("the second column of 'int' must always be no smaller than the first column")
+  } else {
+    if (length(int) != 2) stop("'int' must either be a vector of length 2, or a matrix or dataframe of dimension (n, 2)")
+    if (int[2] < int[1]) stop("the second value of 'int' must be no smaller than the first")
+  }
+
+  # closed
+  if (!is.logical(closed) || length(closed) > 1) stop("'closed' must be a single logical")
+
+  # twosided
+  if (!is.logical(twosided) || length(twosided) > 1) stop("'twosided' must be a single logical")
 }

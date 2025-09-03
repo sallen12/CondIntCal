@@ -52,6 +52,7 @@
 #'
 #'
 #' @examples
+#' \dontrun{
 #' n <- 10000 # sample size
 #' mu <- rnorm(n)
 #' y <- rnorm(n, mean = mu, sd = 1) # simulate observations
@@ -70,7 +71,7 @@
 #'
 #' count_comparables(int_id) # ideal intervals are ordered and therefore all comparable
 #' count_comparables(int_ne) # nested intervals are all nested and therefore none are comparable
-#'
+#' }
 #'
 #' @name count_comparables
 NULL
@@ -79,7 +80,7 @@ NULL
 #' @export
 #' @rdname count_comparables
 count_comparables <- function(int) {
-
+  check_int_args(int)
   if (!is.data.frame(int)) int <- data.frame(Lower = int[, 1], Upper = int[, 2])
 
   n <- nrow(int)

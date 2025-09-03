@@ -49,6 +49,7 @@ second columns of \code{int} should contain the lower and upper bounds of the pr
 intervals, respectively, so that \code{all(int[, 1] < int[, 2])}.
 }
 \examples{
+\dontrun{
 n <- 10000 # sample size
 mu <- rnorm(n)
 y <- rnorm(n, mean = mu, sd = 1) # simulate observations
@@ -67,7 +68,7 @@ int_ne <- data.frame(Lower = L_ne, Upper = U_ne)
 
 count_comparables(int_id) # ideal intervals are ordered and therefore all comparable
 count_comparables(int_ne) # nested intervals are all nested and therefore none are comparable
-
+}
 
 }
 \seealso{

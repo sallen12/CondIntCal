@@ -74,9 +74,25 @@ NULL
 #' @export
 #' @rdname ilength
 ilength <- function(int) {
+  check_int_args(int)
   if (is.vector(int)) {
     int[2] - int[1]
   } else {
     mean(int[, 2] - int[, 1])
+  }
+}
+
+# argument checks
+check_int_args <- function(int) {
+  # int
+  if (!is.matrix(int) && !is.data.frame(int) && !is.vector(int)) stop("'int' must either be a vector, matrix or dataframe")
+  if ((is.matrix(int) || is.vector(int)) && !is.numeric(int)) stop("'int' must contain numeric values")
+  if (is.data.frame(int) && !all(sapply(int, is.numeric))) stop("'int' must contain numeric values")
+  if (is.matrix(int) || is.data.frame(int)) {
+    if (ncol(int) != 2) stop("'int' must be a matrix or dataframe of dimension (n, 2)")
+    if (any(int[, 2] < int[, 1])) stop("the second column of 'int' must always be no smaller than the first column")
+  } else {
+    if (length(int) != 2) stop("'int' must either be a vector of length 2, or a matrix or dataframe of dimension (n, 2)")
+    if (int[2] < int[1]) stop("the second value of 'int' must be no smaller than the first")
   }
 }

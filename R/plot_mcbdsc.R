@@ -93,7 +93,7 @@ NULL
 #' @export
 #' @rdname plot_mcbdsc
 plot_mcbdsc <- function(decomp, n_isolines = 10, colour_values = "black", colour_unc = "#00BF7D", MCBDSC_repel = FALSE, MCB_lim = NA, DSC_lim = NA) {
-
+  check_plot_args(decomp, n_isolines, colour_values, colour_unc, MCBDSC_repel, MCB_lim, DSC_lim)
   if (is.list(decomp)) {
     decomp <- decomp |> as.data.frame() |> t() |> as.data.frame()
     decomp$forecast <- rownames(decomp)
@@ -266,4 +266,52 @@ plot_mcbdsc <- function(decomp, n_isolines = 10, colour_values = "black", colour
         linewidth = 1
       )
     )
+}
+
+# argument checks
+check_plot_args <- function(decomp, n_isolines, colour_values, colour_unc, MCBDSC_repel, MCB_lim, DSC_lim) {
+  # decomp
+  if (!is.list(decomp) && !is.data.frame(decomp)) stop("'int' must either be a list or dataframe")
+  if (is.list(decomp)) {
+    n <- length(decomp)
+    if (is.null(names(decomp))) warning("no labels are given for the forecast methods")
+    if (!all(sapply(decomp, function(x) all(c("UNC", "DSC", "MCB") %in% names(x)))))
+      stop("the elements of 'decomp' must be named vectors with labels 'UNC', 'DSC', and 'MCB'")
+  } else {
+    n <- nrow(decomp)
+    if (!all(c("UNC", "DSC", "MCB", "forecast") %in% colnames(decomp)))
+      stop("'decomp' must contain columns labelled 'UNC', 'DSC', 'MCB', and 'forecast'")
+  }
+
+  # n_isolines
+  if (!is.numeric(n_isolines) || length(n_isolines) > 1) stop("'n_isolines' must be a single integer")
+  if ((n_isolines %% 1) != 0) stop("'n_isolines' must be an integer")
+
+  # colour_values
+  if (!is.vector(colour_values) || !is.character(colour_values)) stop("'colour_values' must be a character vector")
+  if (!(length(colour_values) %in% c(1, n))) stop("'colour_values' must have length 1 or the same number of rows/elements of 'decomp'")
+
+  # colour_unc
+  if (!is.character(colour_unc) || length(colour_unc) > 1) stop("'colour_unc' must be a single character string")
+
+  # MCBDSC_repel
+  if (!is.logical(MCBDSC_repel) || length(MCBDSC_repel) > 1) stop("'MCBDSC_repel' must be a single logical")
+
+  # MCB_lim
+  if (!is.numeric(MCB_lim) || length(MCB_lim) > 2) stop("'MCB_lim' must be a numeric vector of length 1 or 2")
+  if (length(MCB_lim) == 2) {
+    if (MCB_lim[2] <= MCB_lim[1]) stop("The second value in 'MCB_lim' must be larger than the first.")
+    if (MCB_lim[2] <= 0) stop(paste("The upper bound of the x-axis must be positive. Currently", MCB_lim[2]))
+  } else {
+    if (MCB_lim <= 0) stop(paste("The upper bound of the x-axis must be positive. Currently", MCB_lim))
+  }
+
+  # DSC_lim
+  if (!is.numeric(DSC_lim) || length(DSC_lim) > 2) stop("'DSC_lim' must be a numeric vector of length 1 or 2")
+  if (length(DSC_lim) == 2) {
+    if (DSC_lim[2] <= DSC_lim[1]) stop("The second value in 'DSC_lim' must be larger than the first.")
+    if (DSC_lim[2] <= 0) stop(paste("The upper bound of the y-axis must be positive. Currently", DSC_lim[2]))
+  } else {
+    if (DSC_lim <= 0) stop(paste("The upper bound of the y-axis must be positive. Currently", DSC_lim))
+  }
 }

@@ -138,7 +138,6 @@ check_is_args <- function(y, int, level, alpha1, alpha2) {
   # y
   if (!is.numeric(y) || !is.vector(y)) stop("'y' must be a numeric vector")
   n <- length(y)
-  if (!(n > 1)) stop("'y' must contain multiple observations")
 
   # int
   if (!is.matrix(int) && !is.data.frame(int) && !is.vector(int)) stop("'int' must either be a vector, matrix or dataframe")
@@ -146,7 +145,7 @@ check_is_args <- function(y, int, level, alpha1, alpha2) {
   if (is.data.frame(int) && !all(sapply(int, is.numeric))) stop("'int' must contain numeric values")
   if (is.matrix(int) || is.data.frame(int)) {
     if (ncol(int) != 2) stop("'int' must be a matrix or dataframe of dimension (n, 2)")
-    if (nrow(int) != n) stop("the number of rows in 'int' must be the same as the length of 'y'")
+    if (!(nrow(int) %in% c(1, n))) stop("the number of rows in 'int' must be either 1 or the same as the length of 'y'")
     if (any(int[, 2] < int[, 1])) stop("the second column of 'int' must always be no smaller than the first column")
   } else {
     if (length(int) != 2) stop("'int' must either be a vector of length 2, or a matrix or dataframe of dimension (n, 2)")
@@ -173,5 +172,4 @@ check_is_args <- function(y, int, level, alpha1, alpha2) {
     }
     if (alpha2 <= alpha1) stop("'alpha1' must be smaller than 'alpha2'")
   }
-
 }
